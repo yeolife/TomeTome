@@ -7,18 +7,19 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct TomeTabView: View {
     var body: some View {
         VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             Text("Hello, world!")
+                .foregroundColor(.customBeige)
         }
         .padding()
     }
 }
 
 #Preview {
-    ContentView()
+    TomeTabView()
 }
