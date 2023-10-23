@@ -9,16 +9,37 @@ import SwiftUI
 
 struct TomeTabView: View {
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
-                .foregroundColor(.customBeige)
+        ZStack {
+            TabView {
+                SearchView()
+                    .tabItem { Label("검색" , systemImage: "magnifyingglass") }
+                HomeView()
+                    .tabItem { Label("홈" , systemImage: "house.fill") }
+                SettingView()
+                    .tabItem { Label ("프로필", systemImage: "person.fill") }
+            }
+            // SeperatorLineView()
         }
-        .padding()
     }
 }
+
+// MARK: - 구분선
+private struct SeperatorLineView: View {
+    fileprivate var body: some View {
+        VStack {
+            Spacer()
+            
+            Rectangle()
+                .fill(LinearGradient(gradient: Gradient(colors: [Color.white, Color.gray.opacity(0.1)]),
+                                     startPoint: .top,
+                                     endPoint: .bottom)
+                )
+                .frame(height: 10)
+                .padding(.bottom, 60)
+        }
+    }
+}
+
 
 #Preview {
     TomeTabView()
