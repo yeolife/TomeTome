@@ -1,18 +1,18 @@
 //
-//  LoginView.swift
+//  albumCreate.swift
 //  TomeTome
 //
-//  Created by yeolife on 10/22/23.
+//  Created by yeolife on 10/26/23.
 //
 
 import SwiftUI
 
-struct LoginView: View {
+struct albumCreate: View {
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    LoginView()
+    albumCreate()
 }

@@ -1,45 +1,33 @@
 //
-//  ContentView.swift
+//  TomeTabView.swift
 //  TomeTome
 //
-//  Created by yeolife on 10/20/23.
+//  Created by yeolife on 10/28/23.
 //
 
 import SwiftUI
 
 struct TomeTabView: View {
+    @StateObject var tabViewModel: TabViewModel = TabViewModel()
+    
     var body: some View {
-        ZStack {
-            TabView {
-                SearchView()
-                    .tabItem { Label("검색" , systemImage: "magnifyingglass") }
-                HomeView()
-                    .tabItem { Label("홈" , systemImage: "house.fill") }
-                SettingView()
-                    .tabItem { Label ("프로필", systemImage: "person.fill") }
-            }
-            // SeperatorLineView()
+        TabView(selection: $tabViewModel.selectedTab) {
+            HomeView()
+                .tabItem { Label("홈", systemImage: "house.fill") }
+                .tag(Tab.home)
+            SearchView()
+                .tabItem { Label("검색", systemImage: "magnifyingglass") }
+                .tag(Tab.search)
+            PastMessageView()
+                .tabItem { Label("From.과거", systemImage: "ellipsis.message.fill") }
+                .tag(Tab.pastMessage)
+                .badge(3)
+            SettingView()
+                .tabItem { Label ("프로필", systemImage: "person.fill") }
+                .tag(Tab.setting)
         }
     }
 }
-
-// MARK: - 구분선
-private struct SeperatorLineView: View {
-    fileprivate var body: some View {
-        VStack {
-            Spacer()
-            
-            Rectangle()
-                .fill(LinearGradient(gradient: Gradient(colors: [Color.white, Color.gray.opacity(0.1)]),
-                                     startPoint: .top,
-                                     endPoint: .bottom)
-                )
-                .frame(height: 10)
-                .padding(.bottom, 60)
-        }
-    }
-}
-
 
 #Preview {
     TomeTabView()
