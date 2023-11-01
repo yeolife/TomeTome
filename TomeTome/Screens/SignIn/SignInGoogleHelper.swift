@@ -9,16 +9,11 @@ import Foundation
 import GoogleSignIn
 import GoogleSignInSwift
 
-struct GoogleSignInResultModel {
-    let idToken: String
-    let accessToken: String
-}
-
 final class SignInGoogleHelper {
-    
+    // 2. 구글 로그인을 수행하고 로그인 결과로 얻은 토큰을 반환
     @MainActor
     func signIn() async throws -> GoogleSignInResultModel {
-        guard let topVC = Utilities.shared.topViewController() else {
+        guard let topVC = TopViewController.shared.topViewController() else {
             throw URLError(.cannotFindHost)
         }
         
@@ -31,7 +26,7 @@ final class SignInGoogleHelper {
         let accessToken: String = gidSignInResult.user.accessToken.tokenString
         
         let tokens = GoogleSignInResultModel(idToken: idToken, accessToken: accessToken)
-        
+    
         return tokens
     }
 }

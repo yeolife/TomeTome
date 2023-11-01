@@ -6,3 +6,9 @@
 //
 
 import Foundation
+import SwiftUI
+
+struct toastItem {
+    let id = UUID()
+    let message: Text
+}
