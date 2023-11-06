@@ -1,18 +1,18 @@
 //
-//  albumCreate.swift
+//  CustomNavLink.swift
 //  TomeTome
 //
-//  Created by yeolife on 10/26/23.
+//  Created by yeolife on 11/6/23.
 //
 
 import SwiftUI
 
-struct albumCreate: View {
+struct CustomNavLink: View {
     var body: some View {
         Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
     }
 }
 
 #Preview {
-    albumCreate()
+    CustomNavLink()
 }

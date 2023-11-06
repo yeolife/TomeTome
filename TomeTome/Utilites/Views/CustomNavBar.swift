@@ -14,7 +14,25 @@ enum NaviButtonType: String {
     case complete = "완료"
 }
 
-struct CustomLeftNavigationBar: View {
+struct CustomNavBarContainerView<Content: View>: View {
+    let content: Content
+    let customNavigationBar: CustomNavBar
+    
+    init(@ViewBuilder content: () -> Content, customNavigationBar: CustomNavBar) {
+        self.content = content()
+        self.customNavigationBar = customNavigationBar
+    }
+
+    var body: some View {
+        VStack(spacing: 0) {
+            customNavigationBar
+            content
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+}
+
+struct CustomNavBar: View {
     let isDisplayLeftButton: Bool
     let isDisplaySearchButton: Bool
     let isDisplayRightButton: Bool
@@ -30,8 +48,10 @@ struct CustomLeftNavigationBar: View {
                     isTappedLeftButton()
                 } label: {
                     Image(systemName: "chevron.left")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
                         .foregroundColor(.black)
-                        .frame(width: 30, height: 30)
                 }
             }
             
@@ -42,8 +62,10 @@ struct CustomLeftNavigationBar: View {
                     isTappedSearchButton()
                 } label: {
                     Image(systemName: "magnifyingglass")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 20, height: 20)
                         .foregroundColor(.black)
-                        .frame(width: 30, height: 30)
                 }
             }
             
@@ -64,11 +86,11 @@ struct CustomLeftNavigationBar: View {
 }
 
 #Preview {
-    CustomLeftNavigationBar(isDisplayLeftButton: true,
-                        isDisplaySearchButton: true,
-                        isDisplayRightButton: true,
-                        rightButtonType: .edit,
-                        isTappedLeftButton: {},
-                        isTappedSearchButton: {},
-                        isTappedRightButton: {})
+    CustomNavBar(isDisplayLeftButton: true,
+                            isDisplaySearchButton: true,
+                            isDisplayRightButton: true,
+                            rightButtonType: .edit,
+                            isTappedLeftButton: {},
+                            isTappedSearchButton: {},
+                            isTappedRightButton: {})
 }
