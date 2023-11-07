@@ -10,20 +10,13 @@ import PhotosUI
 
 struct CreateAlbumView: View {
     @Binding var isCreateMode: Bool
-    @State var title: String
-    @State private var selectedImage: Image? = Image(systemName: "acorn")
-    @State private var imageSelection: PhotosPickerItem? = nil {
-        didSet {
-            setImage(from: imageSelection)
-        }
-    }
+    @StateObject var createAlbumViewModel = CreateAlbumViewModel()
     
     var body: some View {
         VStack(alignment: .center) {
-            pickerImage(selectedImage: $selectedImage,
-                        imageSelection: $imageSelection)
+            pickerImage(createAlbumViewModel: createAlbumViewModel)
             
-            titleField(text: $title)
+            titleField(createAlbumViewModel: createAlbumViewModel)
             
             Spacer()
             
@@ -44,51 +37,39 @@ struct CreateAlbumView: View {
         .cornerRadius(12)
         .shadow(radius: 40)
     }
-    
-    func setImage(from selection: PhotosPickerItem?) {
-        guard let selection else { return }
-        
-        Task {
-            if let data = try? await selection.loadTransferable(type: Data.self) {
-                if let uiImage = UIImage(data: data) {
-                    selectedImage = Image(uiImage: uiImage)
-                    return
-                }
-            }
-        }
-    }
 }
 
 struct pickerImage: View {
-    @Binding var selectedImage: Image?
-    @Binding var imageSelection: PhotosPickerItem?
+    @ObservedObject var createAlbumViewModel: CreateAlbumViewModel
     
     var body: some View {
-        PhotosPicker(selection: $imageSelection, matching: .images) {
-            if let image = selectedImage {
+        PhotosPicker(selection: $createAlbumViewModel.imageSelection, matching: .images) {
+            if let image = createAlbumViewModel.selectedImage {
                 image
                     .resizable()
-                    .scaledToFit()
+                    .scaledToFill()
                     .frame(width: 250, height: 275)
-                    .background(Color.yellow)
                     .cornerRadius(12)
                     .padding(.top, 36)
             }
+        }
+        .onAppear {
+            PhotoLibraryManager.shared.checkAuthorization()
         }
     }
 }
 
 struct titleField: View {
-    @Binding var text: String
+    @ObservedObject var createAlbumViewModel: CreateAlbumViewModel
     
     var body: some View {
-        TextField("빈 제목", text: $text)
+        TextField("빈 제목", text: $createAlbumViewModel.title)
             .padding(.horizontal, 24)
             .padding(.top, 8)
             .textFieldStyle(.roundedBorder)
-            .onChange(of: text) { newValue in
+            .onChange(of: createAlbumViewModel.title) { newValue in
                 if newValue.count > 15 {
-                    text = String(newValue.prefix(15))
+                    createAlbumViewModel.title = String(newValue.prefix(15))
                 }
             }
     }
@@ -115,5 +96,5 @@ struct dismissButton: View {
 }
 
 #Preview {
-    CreateAlbumView(isCreateMode: .constant(true), title: "")
+    CreateAlbumView(isCreateMode: .constant(false))
 }
