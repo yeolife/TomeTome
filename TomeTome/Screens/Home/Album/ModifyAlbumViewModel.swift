@@ -8,9 +8,13 @@
 import SwiftUI
 import PhotosUI
 
-class CreateAlbumViewModel: ObservableObject {
+@MainActor
+final class ModifyAlbumViewModel: ObservableObject {
     @Published var title: String = ""
-    @Published private(set) var selectedImage: Image? = Image("acorn")
+    @Published var isSendFuture: Bool = false
+    @Published var startDate: Date = Date() // 최소 3분
+    @Published var endDate: Date = Date() // 최대 5년
+    @Published private(set) var selectedImage: Image? = Image("selectImage")
     @Published var imageSelection: PhotosPickerItem? = nil {
         didSet {
             setImage(from: imageSelection)
@@ -33,5 +37,10 @@ class CreateAlbumViewModel: ObservableObject {
                 print(error)
             }
         }
+    }
+    
+    // TODO: - 새로운 앨범을 DB에 저장
+    func completeAlbumCreation() {
+        
     }
 }

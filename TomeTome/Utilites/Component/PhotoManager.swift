@@ -8,8 +8,10 @@
 import Foundation
 import Photos
 
-class PhotoPermissionManager : ObservableObject {
-    @Published var permissionGranted = false
+final class PhotoLibraryManager : ObservableObject {
+    static let shared = PhotoLibraryManager()
+    
+    private init() {}
     
     func checkAuthorization() {
         let photoAuthorizationStatus = PHPhotoLibrary.authorizationStatus()
@@ -37,4 +39,5 @@ class PhotoPermissionManager : ObservableObject {
         default: break
         }
     }
+    
 }

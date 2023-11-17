@@ -81,7 +81,15 @@ struct CustomNavBar: View {
             }
         }
         .padding(.horizontal, 20)
-        .frame(height: 30)
+    }
+}
+
+// 사용자가 네비게이션을 옆으로 넘겨서 pop 할 수 있음
+extension UINavigationController {
+    open override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        interactivePopGestureRecognizer?.delegate = nil
     }
 }
 
