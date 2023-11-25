@@ -8,11 +8,22 @@
 import SwiftUI
 import PhotosUI
 
+// TODO: - 편집 상태도 만들기
+
 @MainActor
-final class MaintenanceAlbumViewModel: ObservableObject {
+final class AlbumViewModel: ObservableObject {
     @Published var title: String = ""
     
+    @Published private(set) var selectedImage: Image? = Image("selectImage")
+    @Published var imageSelection: PhotosPickerItem? = nil {
+        didSet {
+            setImage(from: imageSelection)
+        }
+    }
+    
     @Published var isSendFuture: Bool = false
+    @Published var showDate: String = Date().formattedDate
+    @Published var saveDate: String = Date().formattedDate
     @Published var scheduleSelection: ScheduleOption = .cycle
     @Published var unitSelection: UnitOption = .time
     @Published var dateSelection: DateOption = .timeUnit_1 {
@@ -24,19 +35,10 @@ final class MaintenanceAlbumViewModel: ObservableObject {
             }
         }
     }
-    @Published var saveDate: String = Date().formattedDate
-    @Published var showDate: String = Date().formattedDate
-    
-    @Published private(set) var selectedImage: Image? = Image("selectImage")
-    @Published var imageSelection: PhotosPickerItem? = nil {
-        willSet {
-            setImage(from: imageSelection)
-        }
-    } 
 }
 
 // MARK: - 날짜 관련
-extension MaintenanceAlbumViewModel {
+extension AlbumViewModel {
     func exactDateCreation() {
         let now = Date()
         var dateComponents = DateComponents()
@@ -55,7 +57,6 @@ extension MaintenanceAlbumViewModel {
 
         let calendar = Calendar.current
         if let futureDate = calendar.date(byAdding: dateComponents, to: now) {
-            // 상황에 따라 sendDate에 값이 안들어가게 해야함
             showDate = futureDate.formattedDate
             
             if(scheduleSelection == .schedule) {
@@ -65,24 +66,16 @@ extension MaintenanceAlbumViewModel {
     }
     
     func randomDateCreation() {
-        let now = Date()
+        var now = Date()
         let calendar = Calendar.current
         var dateComponents = DateComponents()
         
-        var addTime: Int = 0
+        var addTime: Int = dateSelection.value * 60
         var addDay: Int = 0
-        
-        if let endOfDay = calendar.date(bySettingHour: 23, minute: 59, second: 59, of: now) {
-            let secondsUntilEndOfDay = endOfDay.timeIntervalSince(now)
-            addTime = Int(secondsUntilEndOfDay / 60)
-        }
 
-        if(unitSelection == .time) {
-            addTime = dateSelection.value * 60
-        }
-        else if(unitSelection == .day && dateSelection.value == 1) {
+        if(unitSelection != .time) {
             addTime = 1440
-        } else {
+            
             if(unitSelection == .day) {
                 addDay = dateSelection.value
             } else if(unitSelection == .week) {
@@ -93,7 +86,7 @@ extension MaintenanceAlbumViewModel {
                 addDay = dateSelection.value * (calendar.range(of: .day, in: .year, for: now)?.count ?? 365)
             }
             
-            dateComponents.day = Int.random(in: 1...addDay)
+            dateComponents.day = Int.random(in: 0...addDay-1)
         }
                 
         dateComponents.minute = Int.random(in: 1...addTime)
@@ -105,7 +98,7 @@ extension MaintenanceAlbumViewModel {
 }
 
 // MARK: - 앨범 관련
-extension MaintenanceAlbumViewModel {
+extension AlbumViewModel {
     // 사진 가져오기
     private func setImage(from selection: PhotosPickerItem?) {
         guard let selection else { return }
